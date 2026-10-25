@@ -169,7 +169,7 @@ function initMobileNav() {
   toggle.addEventListener('click', () => {
     const isOpen = header.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(isOpen));
-    toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    toggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
     toggle.innerHTML = isOpen
       ? '<i class="bi bi-x-lg" aria-hidden="true"></i>'
       : '<i class="bi bi-list" aria-hidden="true"></i>';
@@ -178,7 +178,7 @@ function initMobileNav() {
   const closeMenu = () => {
     header.classList.remove('is-open');
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Open menu');
+    toggle.setAttribute('aria-label', 'Abrir menu');
     toggle.innerHTML = '<i class="bi bi-list" aria-hidden="true"></i>';
   };
 
