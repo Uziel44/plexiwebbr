@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const lenis = initSmoothScroll();
   initMobileNav();
+  initPortfolioColumns();
   initCookieBanner();
   initClickTracking();
   initRevealAnimations();
@@ -160,7 +161,43 @@ function initParallax(lenis) {
   update();
 }
 
+/**
+ * Portfolio en mobile (≤520px): de 3 columnas a 2, con las cards repartidas
+ * en partes iguales (4 + 4 con las 8 webs actuales). Las cards de la 3ª
+ * columna se pasan de a una a la 1ª y a la 2ª, y esa columna se oculta. Al
+ * ensanchar la pantalla cada card vuelve a su columna original. Agregar una
+ * card nueva en el HTML sigue bastando: no hace falta tocar este JS.
+ */
+function initPortfolioColumns() {
+  const cols = Array.from(document.querySelectorAll('.portfolio-col'));
+  if (cols.length < 3) return;
+
+  // Columna original de cada card, para poder deshacer el reparto.
+  const entries = cols.flatMap((col, colIndex) =>
+    Array.from(col.children).map((card) => ({ card, colIndex })),
+  );
+  const mobileQuery = window.matchMedia('(max-width: 520px)');
+
+  const layout = () => {
+    const isMobile = mobileQuery.matches;
+    let extra = 0;
+    entries.forEach(({ card, colIndex }) => {
+      let target = colIndex;
+      if (isMobile && colIndex >= 2) {
+        target = extra % 2;
+        extra += 1;
+      }
+      cols[target].appendChild(card);
+    });
+    cols.slice(2).forEach((col) => { col.hidden = isMobile; });
+  };
+
+  layout();
+  mobileQuery.addEventListener('change', layout);
+}
+
 function initMobileNav() {
+  const menuLabel = (open) => (open ? 'Fechar menu' : 'Abrir menu');
   const header = document.querySelector('.site-header');
   const toggle = document.getElementById('nav-toggle');
   const nav = document.getElementById('main-nav');
@@ -169,7 +206,7 @@ function initMobileNav() {
   toggle.addEventListener('click', () => {
     const isOpen = header.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(isOpen));
-    toggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+    toggle.setAttribute('aria-label', menuLabel(isOpen));
     toggle.innerHTML = isOpen
       ? '<i class="bi bi-x-lg" aria-hidden="true"></i>'
       : '<i class="bi bi-list" aria-hidden="true"></i>';
@@ -178,7 +215,7 @@ function initMobileNav() {
   const closeMenu = () => {
     header.classList.remove('is-open');
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Abrir menu');
+    toggle.setAttribute('aria-label', menuLabel(false));
     toggle.innerHTML = '<i class="bi bi-list" aria-hidden="true"></i>';
   };
 
@@ -211,6 +248,9 @@ function initClickTracking() {
 
     if (href.startsWith('tel:')) {
       window.dataLayer.push({ event: 'tel_click', cta_location: cta || 'other' });
+    }
+    if (href.startsWith('https://wa.me/')) {
+      window.dataLayer.push({ event: 'whatsapp_click', cta_location: cta || 'other' });
     }
     if (cta) {
       window.dataLayer.push({ event: 'cta_click', cta_location: cta });
