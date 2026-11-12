@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const lenis = initSmoothScroll();
   initMobileNav();
+  initPortfolioColumns();
   initCookieBanner();
   initClickTracking();
   initRevealAnimations();
@@ -160,6 +161,41 @@ function initParallax(lenis) {
   update();
 }
 
+/**
+ * Portfólio no mobile (≤520px): de 3 colunas para 2, com os cards divididos
+ * em partes iguais. Os cards da 3ª coluna são passados um a um para a 1ª e a
+ * 2ª, e essa coluna é ocultada. Ao alargar a tela cada card volta à sua
+ * coluna original. Adicionar um card novo no HTML continua bastando: não é
+ * preciso mexer neste JS.
+ */
+function initPortfolioColumns() {
+  const cols = Array.from(document.querySelectorAll('.portfolio-col'));
+  if (cols.length < 3) return;
+
+  // Coluna original de cada card, para poder desfazer a distribuição.
+  const entries = cols.flatMap((col, colIndex) =>
+    Array.from(col.children).map((card) => ({ card, colIndex })),
+  );
+  const mobileQuery = window.matchMedia('(max-width: 520px)');
+
+  const layout = () => {
+    const isMobile = mobileQuery.matches;
+    let extra = 0;
+    entries.forEach(({ card, colIndex }) => {
+      let target = colIndex;
+      if (isMobile && colIndex >= 2) {
+        target = extra % 2;
+        extra += 1;
+      }
+      cols[target].appendChild(card);
+    });
+    cols.slice(2).forEach((col) => { col.hidden = isMobile; });
+  };
+
+  layout();
+  mobileQuery.addEventListener('change', layout);
+}
+
 function initMobileNav() {
   const header = document.querySelector('.site-header');
   const toggle = document.getElementById('nav-toggle');
@@ -212,11 +248,14 @@ function initClickTracking() {
     if (href.startsWith('tel:')) {
       window.dataLayer.push({ event: 'tel_click', cta_location: cta || 'other' });
     }
+    if (href.startsWith('https://wa.me/')) {
+      window.dataLayer.push({ event: 'whatsapp_click', cta_location: cta || 'other' });
+    }
     if (cta) {
       window.dataLayer.push({ event: 'cta_click', cta_location: cta });
     }
     if (link.classList.contains('portfolio-card')) {
-      const name = link.querySelector('.portfolio-name')?.textContent.trim();
+      const name = link.querySelector('img')?.alt.trim();
       window.dataLayer.push({ event: 'portfolio_click', project: name });
     }
   });
