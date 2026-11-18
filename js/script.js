@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lenis = initSmoothScroll();
   initMobileNav();
   initPortfolioColumns();
+  initPortfolioScrollCards();
   initCookieBanner();
   initClickTracking();
   initRevealAnimations();
@@ -162,11 +163,12 @@ function initParallax(lenis) {
 }
 
 /**
- * Portfólio no mobile (≤520px): de 3 colunas para 2, com os cards divididos
- * em partes iguais. Os cards da 3ª coluna são passados um a um para a 1ª e a
- * 2ª, e essa coluna é ocultada. Ao alargar a tela cada card volta à sua
- * coluna original. Adicionar um card novo no HTML continua bastando: não é
- * preciso mexer neste JS.
+ * Portfólio em tablet e mobile (≤900px): de 4 colunas para 2, com os cards
+ * divididos em partes iguais. Os cards da 3ª e da 4ª coluna são passados um a
+ * um para a 1ª e a 2ª (8 + 8 com os 16 sites atuais), e essas colunas são
+ * ocultadas. Ao alargar a tela cada card volta à sua coluna original.
+ * Adicionar um card novo no HTML continua bastando: não é preciso mexer neste
+ * JS.
  */
 function initPortfolioColumns() {
   const cols = Array.from(document.querySelectorAll('.portfolio-col'));
@@ -176,7 +178,7 @@ function initPortfolioColumns() {
   const entries = cols.flatMap((col, colIndex) =>
     Array.from(col.children).map((card) => ({ card, colIndex })),
   );
-  const mobileQuery = window.matchMedia('(max-width: 520px)');
+  const mobileQuery = window.matchMedia('(max-width: 900px)');
 
   const layout = () => {
     const isMobile = mobileQuery.matches;
@@ -194,6 +196,23 @@ function initPortfolioColumns() {
 
   layout();
   mobileQuery.addEventListener('change', layout);
+}
+
+/**
+ * Cards do portfólio com captura full-page longa (".portfolio-card--scroll"):
+ * no desktop o percurso de cima para baixo já é feito pelo ":hover" no CSS. No
+ * touch não existe hover sustentado, então aqui ele é ativado com o dedo
+ * apoiado (touchstart) e interrompido ao soltar ou cancelar
+ * (touchend/touchcancel).
+ */
+function initPortfolioScrollCards() {
+  document.querySelectorAll('.portfolio-card--scroll').forEach((card) => {
+    if (card.dataset.touchBound) return; // evita duplicar os listeners se for chamada de novo
+    card.dataset.touchBound = '1';
+    card.addEventListener('touchstart', () => card.classList.add('is-scrolling'), { passive: true });
+    card.addEventListener('touchend', () => card.classList.remove('is-scrolling'));
+    card.addEventListener('touchcancel', () => card.classList.remove('is-scrolling'));
+  });
 }
 
 function initMobileNav() {
