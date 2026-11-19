@@ -118,7 +118,7 @@ function initRevealAnimations() {
 
 /**
  * Parallax en elementos marcados con data-parallax="0.2" (intensidad; negativo
- * invierte la dirección). Usado por el showcase de portfolio (3 columnas a
+ * invierte la dirección). Usado por el showcase de portfolio (4 columnas a
  * distinta velocidad, igual que tiendanube.com) y queda disponible para
  * cualquier otro elemento. Se desactiva con movimiento reducido. Si Lenis
  * está activo se engancha a su evento de scroll; si no, usa el scroll nativo.

@@ -374,11 +374,12 @@ section[id] { scroll-margin-top: 80px; }
 .portfolio-col[hidden] { display: none; }
 
 /* ---------- Portfolio en mobile: 2 columnas con 8 cards cada una (16 en total) ----------
-   Las cards las reparte initPortfolioColumns. Cada imagen se recorta a ~2/3
-   de su ancho: la caja es 14:15 y una captura de 1.4:1 muestra (14/15) / 1.4 =
-   2/3. Es aproximado: las capturas no tienen todas la misma proporción
-   (de 0.8 a 2.1), así que las más anchas se recortan más y las verticales
-   casi nada. Anclada a la izquierda, donde está el título de cada web. */
+   Las cards las reparte initPortfolioColumns. La caja de la imagen es 14:15.
+   En las 14 capturas full-page (altas) muestra su parte superior, y el
+   recorrido al pasar el mouse o tocar (.portfolio-card--scroll) la desplaza
+   hacia abajo. Las 2 cards simples (Veterinaria Dr. Peirone y Fredd Tur) se
+   recortan a la caja y quedan ancladas a la izquierda, donde está el título
+   de cada web. */
 @media (max-width: 520px) {
   /* Sin margen lateral: las columnas llegan de borde a borde de la pantalla.
      El selector lleva .showcase para ganarle a la regla de ≤900px (más abajo

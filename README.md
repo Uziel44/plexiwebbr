@@ -30,9 +30,8 @@ Se sube la raíz del repo tal cual (no hay carpeta `dist/`). Publicado en Cloudf
 
 ## Agregar un proyecto al portfolio
 
-En `index.html`, dentro de `#portfolio-track`, agregar otra tarjeta `<a class="portfolio-card">` igual a las existentes, en cualquier posición. El carrusel (flechas + dots) se recalcula solo desde `js/script.js` — no hace falta tocar CSS ni JS.
+En `index.html`, dentro de `.portfolio-columns`, agregar otra tarjeta `<a class="portfolio-card">` en cualquiera de las 4 `.portfolio-col`. Para que la imagen recorra la captura de arriba hacia abajo al pasar el mouse o tocar, usar una captura full-page y sumar la clase `portfolio-card--scroll`. El `<img>` no lleva atributos `width`/`height`: la caja la dimensiona el `aspect-ratio` del CSS. El reparto en 2 columnas en tablet/mobile (≤900px) lo hace `initPortfolioColumns` en `js/script.js`, así que no hace falta tocar CSS ni JS.
 
 ## Notas
 
-- `assets/home/verax.png` es en realidad un archivo JPEG con esa extensión — funciona, pero si se vuelve a tocar conviene renombrarlo a `.jpg`.
 - Ver [ARQUITECTURA.md](./ARQUITECTURA.md) para el checklist de arquitectura del proyecto.
